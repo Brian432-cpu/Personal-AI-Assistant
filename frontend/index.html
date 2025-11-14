@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>My Personal AI Assistant (Voice)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background:#f7f7f9; }
+    .chat { max-width:900px; margin: 30px auto; background:white; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.06); padding:16px;}
+    .messages { height:60vh; overflow:auto; border:1px solid #eee; padding:12px; border-radius:6px; background:#fff; }
+    .msg { margin:8px 0; }
+    .user { text-align:right; }
+    .assistant { text-align:left; }
+    .bubble { display:inline-block; padding:10px 14px; border-radius:16px; max-width:80%; word-break:break-word; }
+    .user .bubble { background:#0b93f6; color:white; }
+    .assistant .bubble { background:#f1f1f1; color:#111; }
+    .controls { display:flex; gap:8px; margin-top:12px; align-items:center; }
+    input[type="text"] { flex:1; padding:10px; border-radius:6px; border:1px solid #ddd; }
+    button { padding:10px 14px; border-radius:6px; border:none; background:#0b93f6; color:white; cursor:pointer; }
+    .icon-btn { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:8px; background:#e9eef8; color:#0b3d91; border:none; cursor:pointer; }
+    .icon-btn.recording { background:#fdd; color:#d00; box-shadow:0 0 0 6px rgba(255,0,0,0.06) inset; }
+    .settings { margin-left:12px; display:flex; gap:8px; align-items:center; }
+    small.note { color:#666; display:block; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div class="chat">
+    <h2>My Personal AI Assistant (Voice)</h2>
+    <div id="messages" class="messages" aria-live="polite"></div>
+
+    <div class="controls">
+      <button id="micBtn" class="icon-btn" title="Start/Stop voice input" aria-pressed="false">🎤</button>
+      <input id="messageInput" type="text" placeholder="Ask me anything..." aria-label="Message input" />
+      <button id="sendBtn">Send</button>
+      <div class="settings">
+        <button id="speakToggle" class="icon-btn" title="Toggle voice replies">🔊</button>
+      </div>
+    </div>
+
+    <small class="note">Voice input uses your browser's Speech Recognition (Chrome/Edge recommended). Voice replies use browser Text-to-Speech.</small>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

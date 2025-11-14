@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  assistant:
+    build: .
+    container_name: personal-ai-assistant
+    ports:
+      - "5000:5000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - MAX_HISTORY=${MAX_HISTORY:-8}
+    volumes:
+      - ./backend/memory.db:/app/backend/memory.db   # persist memory locally
