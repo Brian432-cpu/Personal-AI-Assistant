@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ghcr.io/<GITHUB_USER>/personal-ai-backend:latest
+        image: ghcr.io/Brian432-cpu/personal-ai-backend:latest
         ports:
         - containerPort: 5000
         env:
