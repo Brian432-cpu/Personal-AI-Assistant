@@ -1,8 +1,10 @@
 version: "3.8"
 services:
-  assistant:
-    build: .
-    container_name: personal-ai-assistant
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: personal-ai-backend
     ports:
       - "5000:5000"
     environment:
@@ -10,4 +12,12 @@ services:
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
       - MAX_HISTORY=${MAX_HISTORY:-8}
     volumes:
-      - ./backend/memory.db:/app/backend/memory.db   # persist memory locally
+      - ./backend/memory.db:/app/backend/memory.db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: personal-ai-frontend
+    ports:
+      - "3000:80"
