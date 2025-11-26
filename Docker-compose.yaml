@@ -21,3 +21,4 @@ services:
     container_name: personal-ai-frontend
     ports:
       - "3000:80"
+"
