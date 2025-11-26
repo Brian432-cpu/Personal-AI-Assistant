@@ -57,3 +57,4 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/personal-ai-frontend:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/personal-ai-frontend:${{ github.sha }}
+            
