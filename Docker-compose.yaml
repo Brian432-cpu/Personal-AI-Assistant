@@ -3,28 +3,33 @@ version: "3.8"
 services:
   backend:
     build:
-      context: .   # root folder
-      dockerfile: Dockerfile  # points to Dockerfile in root
+      context: .
+      dockerfile: Dockerfile  # your backend Dockerfile in root
     container_name: personal-ai-backend
     ports:
-      - "5000:5000"
+      - "5000:5000"  # expose backend to host
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OPENAI_MODEL=${OPENAI_MODEL}
-      - MAX_HISTORY=${MAX_HISTORY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}  # from .env file
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
       - MEMORY_DB=/app/memory.db
+      - MAX_HISTORY=${MAX_HISTORY:-8}
     volumes:
-      - ./backend/memory.db:/app/memory.db
-    restart: unless-stopped
+      - ./backend/memory.db:/app/memory.db  # persist database
+    networks:
+      - assistant-network
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # if you create a Dockerfile in frontend
     container_name: personal-ai-frontend
     ports:
-      - "3000:3000"
+      - "3000:3000"  # host access to frontend
     depends_on:
       - backend
-    restart: unless-stopped
+    networks:
+      - assistant-network
 
+networks:
+  assistant-network:
+    driver: bridge
