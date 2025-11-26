@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: personal-ai-backend
+  labels:
+    app: personal-ai-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: personal-ai-backend
+  template:
+    metadata:
+      labels:
+        app: personal-ai-backend
+    spec:
+      containers:
+      - name: backend
+        image: ghcr.io/<GITHUB_USER>/personal-ai-backend:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: personal-ai-secrets
+              key: OPENAI_API_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: personal-ai-backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: personal-ai-backend
