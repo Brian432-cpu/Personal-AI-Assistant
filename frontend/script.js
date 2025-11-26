@@ -1,4 +1,3 @@
-// frontend/script.js
 const sendBtn = document.getElementById("sendBtn");
 const input = document.getElementById("messageInput");
 const messagesDiv = document.getElementById("messages");
@@ -9,7 +8,13 @@ let recognition = null;
 let recognizing = false;
 let speakReplies = true;
 
-// Feature detection for SpeechRecognition
+// Auto-detect backend URL
+const isDocker = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
+const BACKEND_URL = isDocker ? "http://backend:5000" : ""; // empty string = same origin
+const API_URL = `${BACKEND_URL}/api/chat`;
+const HISTORY_URL = `${BACKEND_URL}/api/history`;
+
+// SpeechRecognition setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
@@ -35,26 +40,24 @@ if (SpeechRecognition) {
       .join("");
     if (transcript && transcript.trim().length > 0) {
       input.value = transcript;
-      // Optionally auto-send on voice input:
+      // Optionally auto-send voice input
       // sendMessage();
     }
   });
 
   recognition.addEventListener("error", (e) => {
     console.warn("Speech recognition error:", e);
-    // stop visual recording state
     recognizing = false;
     micBtn.classList.remove("recording");
     micBtn.setAttribute("aria-pressed", "false");
   });
 } else {
-  // Disable mic button if API not supported
   micBtn.title = "Voice input not supported in this browser";
   micBtn.style.opacity = "0.5";
   micBtn.disabled = true;
 }
 
-// Speak toggle state
+// Speak toggle
 speakToggle.title = "Toggle voice replies";
 speakToggle.addEventListener("click", () => {
   speakReplies = !speakReplies;
@@ -62,10 +65,10 @@ speakToggle.addEventListener("click", () => {
   speakToggle.textContent = speakReplies ? "🔊" : "🔈";
 });
 
-// Load conversation history when page loads
+// Load conversation history
 async function loadHistory() {
   try {
-    const r = await fetch("/api/history");
+    const r = await fetch(HISTORY_URL);
     if (!r.ok) return;
     const j = await r.json();
     messagesDiv.innerHTML = "";
@@ -84,16 +87,15 @@ function appendMessage(role, content) {
   bubble.textContent = content;
   wrap.appendChild(bubble);
   messagesDiv.appendChild(wrap);
-  // If assistant spoke replies are enabled, speak this message
-  if (role === "assistant" && speakReplies) {
-    speakText(content);
-  }
+
+  if (role === "assistant" && speakReplies) speakText(content);
 }
 
 function scrollBottom() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+// Send message
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
@@ -101,7 +103,7 @@ async function sendMessage() {
   input.value = "";
   scrollBottom();
 
-  // show temporary thinking bubble
+  // thinking bubble
   const thinkingWrap = document.createElement("div");
   thinkingWrap.className = "msg assistant";
   thinkingWrap.innerHTML = `<div class="bubble">…thinking</div>`;
@@ -109,14 +111,17 @@ async function sendMessage() {
   scrollBottom();
 
   try {
-    const res = await fetch("/api/chat", {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: text })
     });
+    if (!res.ok) {
+      appendMessage("assistant", `Error: server returned ${res.status}`);
+      return;
+    }
     const j = await res.json();
 
-    // Replace thinking bubble
     const lastBubble = messagesDiv.querySelector(".msg.assistant:last-child .bubble");
     if (lastBubble && lastBubble.textContent === "…thinking") {
       lastBubble.textContent = j.reply || "No reply";
@@ -132,49 +137,36 @@ async function sendMessage() {
   }
 }
 
+// Event listeners
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keydown", (e) => { if (e.key === 'Enter') sendMessage(); });
 
-// Mic button toggles recognition
 micBtn.addEventListener("click", () => {
   if (!recognition) return;
   try {
-    if (recognizing) {
-      recognition.stop();
-    } else {
-      recognition.start();
-    }
+    if (recognizing) recognition.stop();
+    else recognition.start();
   } catch (err) {
     console.warn("Speech recognition toggle error:", err);
   }
 });
 
-// Text-to-speech using SpeechSynthesis API
+// Text-to-speech
 function speakText(text) {
   if (!('speechSynthesis' in window)) return;
-  // cancel any ongoing speech for immediacy
   window.speechSynthesis.cancel();
-
   const utter = new SpeechSynthesisUtterance(text);
-  // Optional: pick a voice that matches the system language
   const lang = navigator.language || 'en-US';
   utter.lang = lang;
-
-  // Prefer a voice that is not default if available
   const voices = window.speechSynthesis.getVoices();
   if (voices && voices.length) {
-    // Attempt to find a matching language voice
     const v = voices.find(vo => vo.lang && vo.lang.startsWith(lang));
     if (v) utter.voice = v;
-    // else just let browser pick
   }
-
-  // Slight rate/pitch adjustments — safe defaults
   utter.rate = 1;
   utter.pitch = 1;
-
   window.speechSynthesis.speak(utter);
 }
 
-// On page load, populate history
+// Initialize
 loadHistory();
