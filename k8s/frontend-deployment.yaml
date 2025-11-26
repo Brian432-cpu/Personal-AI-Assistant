@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: ghcr.io/<GITHUB_USER>/personal-ai-frontend:latest
+        image: ghcr.io/Brian432-cpu/personal-ai-frontend:latest
         ports:
         - containerPort: 80
 ---
