@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: personal-ai-frontend
+  labels:
+    app: personal-ai-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: personal-ai-frontend
+  template:
+    metadata:
+      labels:
+        app: personal-ai-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ghcr.io/<GITHUB_USER>/personal-ai-frontend:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: personal-ai-frontend
+spec:
+  type: LoadBalancer    # or ClusterIP + Ingress
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: personal-ai-frontend
