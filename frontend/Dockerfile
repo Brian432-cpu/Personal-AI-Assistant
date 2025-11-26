@@ -1,9 +1,9 @@
-# Use Node.js for building frontend
-FROM node:20 as build
+# Build stage
+FROM node:20 AS build
 
 WORKDIR /app
 
-# Copy package files
+# Copy package.json and package-lock.json
 COPY frontend/package*.json ./
 
 # Install dependencies
@@ -12,10 +12,10 @@ RUN npm install
 # Copy frontend code
 COPY frontend/ ./
 
-# Build app (or build folder)
+# Build the frontend
 RUN npm run build
 
-# Use nginx to serve built frontend
+# Serve stage
 FROM nginx:stable-alpine
 
 # Copy build output to nginx public folder
@@ -26,3 +26,4 @@ EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
+
