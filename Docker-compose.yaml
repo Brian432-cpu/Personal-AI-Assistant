@@ -1,23 +1,29 @@
 version: "3.8"
+
 services:
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: personal-ai-backend
     ports:
       - "5000:5000"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
-      - MAX_HISTORY=${MAX_HISTORY:-8}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - MAX_HISTORY=${MAX_HISTORY}
+      - MEMORY_DB=/app/backend/memory.db
     volumes:
       - ./backend/memory.db:/app/backend/memory.db
+    restart: unless-stopped
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: personal-ai-frontend
     ports:
-      - "3000:80"
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
