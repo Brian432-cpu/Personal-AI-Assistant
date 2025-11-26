@@ -23,6 +23,7 @@ spec:
         - name: OPENAI_API_KEY
           valueFrom:
             secretKeyRef:
+            
               name: personal-ai-secrets
               key: OPENAI_API_KEY
 ---
