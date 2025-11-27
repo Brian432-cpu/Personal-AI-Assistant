@@ -10,7 +10,11 @@ let speakReplies = true;
 
 // Auto-detect backend URL
 const isDocker = window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
-const BACKEND_URL = isDocker ? "http://backend:5000" : ""; // empty string = same origin
+
+const BACKEND_URL = isDocker 
+  ? "http://backend:5000"         // Docker internal URL
+  : "http://localhost:5000";      // Local development URL
+
 const API_URL = `${BACKEND_URL}/api/chat`;
 const HISTORY_URL = `${BACKEND_URL}/api/history`;
 
