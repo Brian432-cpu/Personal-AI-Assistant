@@ -104,6 +104,11 @@ def history():
     history = get_recent_history(MAX_HISTORY)
     return jsonify({"history": history})
 
+@app.route("/")
+def home():
+    return {"message": "Backend running"}
+
+
 if __name__ == "__main__":
     init_db()
     app.run(host="0.0.0.0", port=5000)
