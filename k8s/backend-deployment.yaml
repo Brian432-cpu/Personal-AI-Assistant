@@ -23,9 +23,36 @@ spec:
         - name: OPENAI_API_KEY
           valueFrom:
             secretKeyRef:
-            
               name: personal-ai-secrets
               key: OPENAI_API_KEY
+        - name: OPENAI_MODEL
+          value: "gpt-4o-mini"
+        - name: MEMORY_DB
+          value: "/app/memory.db"
+        - name: MAX_HISTORY
+          value: "8"
+
+        volumeMounts:
+        - name: memorydb
+          mountPath: /app
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+      volumes:
+      - name: memorydb
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
