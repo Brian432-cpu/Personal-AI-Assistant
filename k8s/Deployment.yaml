@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: personal-ai-assistant
+  labels:
+    app: personal-ai-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: personal-ai-assistant
+  template:
+    metadata:
+      labels:
+        app: personal-ai-assistant
+    spec:
+      containers:
+      - name: personal-ai-container
+        image: ghcr.io/Brian432-cpu/personal-ai-assistant:latest
+        ports:
+        - containerPort: 80     # frontend
+        - containerPort: 5001   # backend
