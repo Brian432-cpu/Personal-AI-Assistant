@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: personal-ai-assistant
-          image: sumba729/personal-ai-assistant:latest
+          image: personal-ai-assistant:latest   # Use local image for Kind
+          imagePullPolicy: IfNotPresent          # Don’t try to pull from Docker Hub
           ports:
             - containerPort: 3000
           env:
