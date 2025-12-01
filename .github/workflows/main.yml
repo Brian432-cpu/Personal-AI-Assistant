@@ -17,12 +17,13 @@ jobs:
       K8S_NAMESPACE: default
 
     steps:
+
       # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
       # 2. Set up Docker Buildx
-      - name: Set up Docker
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       # 3. Login to Docker Hub
@@ -52,20 +53,30 @@ jobs:
       - name: Load Docker image into Kind
         run: kind load docker-image $IMAGE_NAME
 
-      # 8. Create OPENAI secret in Kubernetes
+      # 8. Install kubectl
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      # 9. Create Kubernetes secret
       - name: Set Kubernetes env secrets
         run: |
           kubectl create secret generic openai-secret \
             --from-literal=OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      # 9. Install kubectl
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-
-      # 10. Deploy to Kubernetes
+      # 10. Deploy app
       - name: Deploy to Kind cluster
         run: |
           kubectl apply -f k8s/Deployment.yaml
           kubectl apply -f k8s/Service.yaml
           kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE
+
+      # 11. Debugging (shows logs when rollout fails)
+      - name: Debug pod if rollout fails
+        if: failure()
+        run: |
+          echo "Getting pods..."
+          kubectl get pods
+          e
+
+
