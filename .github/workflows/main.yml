@@ -46,24 +46,8 @@ jobs:
       # 6. Set up Kind for local Kubernetes cluster
       - name: Set up Kind
         uses: engineerd/setup-kind@v0.20.0
-
-          with:
+        with:
           version: v0.20.0
 
-
       # 7. Load Docker image into Kind cluster
-      - name: Load Docker image into Kind
-        run: kind load docker-image $IMAGE_NAME
-
-      # 8. Set up kubectl
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      # 9. Deploy to Kind cluster
-      - name: Deploy to Kind cluster
-        run: |
-          kubectl apply -f k8s/Deployment.yaml
-          kubectl apply -f k8s/Service.yaml
-          kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE
+      - na
