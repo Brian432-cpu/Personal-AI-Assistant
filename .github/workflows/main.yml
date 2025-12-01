@@ -76,7 +76,6 @@ jobs:
         if: failure()
         run: |
           echo "Getting pods..."
-          kubectl get pods
-          e
-
-
+          kubectl get pods -n $K8S_NAMESPACE
+          kubectl describe pods -n $K8S_NAMESPACE
+          kubectl logs -n $K8S_NAMESPACE -l app=$K8S_DEPLOYMENT
