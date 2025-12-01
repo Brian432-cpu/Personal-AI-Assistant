@@ -39,7 +39,7 @@ jobs:
           docker push $DOCKER_HUB_REPO:latest
           
       - name: Set up Kind
-        uses: engineerd/setup-kind@v0.20.0
+        uses: weaveworks/setup-kind@v0.17.0
         with:
           version: v0.20.0
 
