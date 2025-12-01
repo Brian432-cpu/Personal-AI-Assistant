@@ -45,8 +45,9 @@ jobs:
           
       # 6. Set up Kind for local Kubernetes cluster
       - name: Set up Kind
-        uses: weaveworks/setup-kind@v1
-        with:
+        uses: engineerd/setup-kind@v0.20.0
+
+          with:
           version: v0.20.0
 
 
