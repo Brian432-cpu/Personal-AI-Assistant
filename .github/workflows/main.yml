@@ -12,7 +12,7 @@ jobs:
 
     env:
       IMAGE_NAME: personal-ai-assistant:latest
-      DOCKER_HUB_REPO: yourdockerhubusername/personal-ai-assistant
+      DOCKER_HUB_REPO: sumba729/personal-ai-assistant
       K8S_DEPLOYMENT: personal-ai-assistant
       K8S_NAMESPACE: default
       OPENAI_MODEL: gpt-4o-mini
