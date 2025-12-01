@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      # 4. Build the Docker image
+      # 4. Build Docker image
       - name: Build Docker image
         run: docker build -t $IMAGE_NAME .
 
@@ -52,11 +52,18 @@ jobs:
       - name: Load Docker image into Kind
         run: kind load docker-image $IMAGE_NAME
 
-      # 8. Install kubectl
+      # 8. Create OPENAI secret in Kubernetes
+      - name: Set Kubernetes env secrets
+        run: |
+          kubectl create secret generic openai-secret \
+            --from-literal=OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      # 9. Install kubectl
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
 
-      # 9. Deploy to Kind
+      # 10. Deploy to Kubernetes
       - name: Deploy to Kind cluster
         run: |
           kubectl apply -f k8s/Deployment.yaml
