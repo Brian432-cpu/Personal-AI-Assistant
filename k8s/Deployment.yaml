@@ -14,11 +14,14 @@ spec:
     spec:
       containers:
         - name: personal-ai-assistant
-          image: yourdockerhubusername/personal-ai-assistant:latest
+          image: briansumba/personal-ai-assistant:latest
           ports:
             - containerPort: 3000
           env:
             - name: OPENAI_API_KEY
-              value: "${OPENAI_API_KEY}"
+              valueFrom:
+                secretKeyRef:
+                  name: openai-secret
+                  key: OPENAI_API_KEY
             - name: OPENAI_MODEL
               value: "gpt-4o-mini"
