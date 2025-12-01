@@ -43,11 +43,13 @@ jobs:
           docker tag $IMAGE_NAME $DOCKER_HUB_REPO:latest
           docker push $DOCKER_HUB_REPO:latest
 
-      # 6. Set up Kind for local Kubernetes cluster
-      - name: Set up Kind
-        uses: engineerd/setup-kind@v0.11.0
-        with:
-          version: v0.20.0
+      # 6. Install Kind locally
+      - name: Install Kind
+        run: |
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
 
       # 7. Load Docker image into Kind cluster
       - name: Load Docker image into Kind
