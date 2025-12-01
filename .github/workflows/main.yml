@@ -42,12 +42,13 @@ jobs:
         run: |
           docker tag $IMAGE_NAME $DOCKER_HUB_REPO:latest
           docker push $DOCKER_HUB_REPO:latest
-
+          
       # 6. Set up Kind for local Kubernetes cluster
       - name: Set up Kind
-        uses: engineerd/setup-kind@v0.6.0
+        uses: weaveworks/setup-kind@v1
         with:
           version: v0.20.0
+
 
       # 7. Load Docker image into Kind cluster
       - name: Load Docker image into Kind
