@@ -5,8 +5,13 @@ metadata:
 spec:
   selector:
     app: personal-ai-assistant
-  type: LoadBalancer  # exposes it publicly
+  type: NodePort
   ports:
-    - protocol: TCP
+    - name: frontend
       port: 80
+      targetPort: 80
+      nodePort: 30080
+    - name: backend
+      port: 5000
       targetPort: 5000
+      nodePort: 30500
