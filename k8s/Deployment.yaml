@@ -15,21 +15,14 @@ spec:
         app: personal-ai-assistant
     spec:
       containers:
-        # Backend container
-        - name: backend
-          image: sumba729/personal-ai-assistant:latest
+        - name: personal-ai-assistant
+          image: your-dockerhub-username/personal-ai-assistant:latest
+          imagePullPolicy: Always
           ports:
-            - containerPort: 5000
+            - containerPort: 3000  # frontend
+            - containerPort: 5000  # backend
           env:
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: openai-secret
-                  key: OPENAI_API_KEY
-            - name: OPENAI_MODEL
-              value: "gpt-4o-mini"
-        # Frontend container
-        - name: frontend
-          image: sumba729/personal-ai-frontend:latest  # React app built and containerized
-          ports:
-            - containerPort: 80
+            - name: PORT
+              value: "5000"
+            - name: FRONTEND_PORT
+              value: "3000"
